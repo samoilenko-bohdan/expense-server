@@ -20,21 +20,25 @@ import org.springframework.web.bind.annotation.RestController;
 import com.expenseManager.ExpenseManagerAPI.domain.Expense;
 import com.expenseManager.ExpenseManagerAPI.service.ExpenseService;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/expense")
 public class ExpenseController {
 
 	@Autowired
 	ExpenseService expenseService;
-	
-	
+
+
 	@GetMapping
 	public ResponseEntity<?> getAll() {
 		List<Expense> result = expenseService.findAll();
 		return new ResponseEntity(result, HttpStatus.OK);
 	}
-	
+
+	@GetMapping("/version")
+	public String getVersion() {
+		return "1";
+	}
+
 	@GetMapping("/{year}/{month}")
 	public ResponseEntity<?> getByMonthYear(@PathVariable("year") int year, @PathVariable("month") String month) {
 		List<Expense> result = new ArrayList<>();
@@ -45,7 +49,7 @@ public class ExpenseController {
 		}
 		return new ResponseEntity(result, HttpStatus.OK);
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<?> addorUpdateExpense(@RequestBody Expense expense) {
 		if (expense.getId() == null) {
@@ -54,7 +58,7 @@ public class ExpenseController {
 		expenseService.saveOrUpdateExpense(expense);
 		return new ResponseEntity("Expense added succcessfully", HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping
 	public void deleteExpense(@RequestParam("id") String id) {
 		expenseService.deleteExpense(id);
